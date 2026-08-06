@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sparkles, Compass } from "lucide-react";
@@ -46,6 +46,7 @@ const SignatureDishes = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const lenis = useLenis();
+  const [activeIndex, setActiveIndex] = useState(0);
 
   // Refs for tracking mouse/touch dragging states
   const isDraggingRef = useRef(false);
@@ -53,51 +54,90 @@ const SignatureDishes = () => {
   const startScrollYRef = useRef(0);
 
   useEffect(() => {
-    const pin = gsap.fromTo(
-      sectionRef.current,
-      { translateX: 0 },
-      {
-        translateX: "-200vw", // Moves through the 3 cards (each is 100vw wide virtually, offset correctly)
-        ease: "none",
-        scrollTrigger: {
-          trigger: triggerRef.current,
-          start: "top top",
-          end: "+=2000",
-          scrub: 1,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true
-        }
-      }
-    );
+    let ctx = gsap.context(() => {});
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 1024px)", () => {
+      ctx.add(() => {
+        gsap.fromTo(
+          sectionRef.current,
+          { translateX: 0 },
+          {
+            translateX: "-300vw", // Moves through the 4 cards (1 intro + 3 dishes)
+            ease: "none",
+            scrollTrigger: {
+              id: "signatureTrigger",
+              trigger: triggerRef.current,
+              start: "top top",
+              end: "+=3000",
+              scrub: 1,
+              pin: true,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+              onUpdate: (self) => {
+                const index = Math.round(self.progress * 3);
+                setActiveIndex(index);
+              }
+            }
+          }
+        );
+      });
+    });
 
     return () => {
-      pin.scrollTrigger?.kill();
+      ctx.revert();
+      mm.revert();
     };
   }, []);
 
-  // Dragging event handlers
+  const handleMobileScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (window.innerWidth >= 1024) return;
+    const container = e.currentTarget;
+    const index = Math.round(container.scrollLeft / window.innerWidth);
+    setActiveIndex(index);
+  };
+
+  const scrollToSlide = (index: number) => {
+    if (window.innerWidth >= 1024) {
+      const scrollTriggerInstance = ScrollTrigger.getById("signatureTrigger");
+      if (scrollTriggerInstance) {
+        const start = scrollTriggerInstance.start;
+        const end = scrollTriggerInstance.end;
+        const totalScroll = end - start;
+        const targetScroll = start + (index / 3) * totalScroll;
+        
+        if (lenis) {
+          lenis.scrollTo(targetScroll);
+        } else {
+          window.scrollTo({ top: targetScroll, behavior: "smooth" });
+        }
+      }
+    } else {
+      if (sectionRef.current) {
+        sectionRef.current.scrollTo({
+          left: index * window.innerWidth,
+          behavior: "smooth"
+        });
+      }
+    }
+  };
+
+  // Dragging event handlers (desktop only)
   const handleMouseDown = (e: React.MouseEvent) => {
-    // Only allow left mouse button drag
+    if (window.innerWidth < 1024) return;
     if (e.button !== 0) return;
     isDraggingRef.current = true;
     startXRef.current = e.clientX;
     startScrollYRef.current = window.scrollY;
-    
-    // Disable text/image selection during drag
     e.preventDefault();
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDraggingRef.current) return;
+    if (window.innerWidth < 1024 || !isDraggingRef.current) return;
     
     const dx = e.clientX - startXRef.current;
-    
-    // Scale horizontal delta to vertical scroll:
-    // 2000px vertical scroll range corresponds to 200vw horizontal translation
-    const totalHorizontalScroll = 2 * window.innerWidth;
-    const scrollRatio = 2000 / totalHorizontalScroll;
-    
+    const totalHorizontalScroll = 3 * window.innerWidth;
+    const scrollRatio = 3000 / totalHorizontalScroll;
     const targetScrollY = startScrollYRef.current - dx * scrollRatio;
     
     if (lenis) {
@@ -112,18 +152,18 @@ const SignatureDishes = () => {
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (window.innerWidth < 1024) return;
     isDraggingRef.current = true;
     startXRef.current = e.touches[0].clientX;
     startScrollYRef.current = window.scrollY;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDraggingRef.current) return;
+    if (window.innerWidth < 1024 || !isDraggingRef.current) return;
     
     const dx = e.touches[0].clientX - startXRef.current;
-    const totalHorizontalScroll = 2 * window.innerWidth;
-    const scrollRatio = 2000 / totalHorizontalScroll;
-    
+    const totalHorizontalScroll = 3 * window.innerWidth;
+    const scrollRatio = 3000 / totalHorizontalScroll;
     const targetScrollY = startScrollYRef.current - dx * scrollRatio;
     
     if (lenis) {
@@ -141,11 +181,11 @@ const SignatureDishes = () => {
     <div id="signature" ref={triggerRef} className="relative z-10">
       <div className="absolute inset-0 bg-gradient-to-b from-forest-950 via-forest-900 to-forest-950 pointer-events-none" />
 
-      {/* Title Header (Sticky or normal above horizontal container) */}
+      {/* Main horizontal sliding/scrolling container */}
       <div
-        className="h-screen w-full flex overflow-hidden cursor-grab active:cursor-grabbing select-none"
-        style={{ width: "300vw" }}
+        className="w-full lg:w-[400vw] flex overflow-x-auto lg:overflow-hidden snap-x snap-mandatory lg:snap-none scrollbar-none cursor-grab active:cursor-grabbing select-none h-screen"
         ref={sectionRef}
+        onScroll={handleMobileScroll}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUpOrLeave}
@@ -156,7 +196,7 @@ const SignatureDishes = () => {
       >
         
         {/* Intro Slide (Horizontal Title Card) */}
-        <div className="h-screen w-screen flex flex-col justify-center px-12 md:px-24 shrink-0 bg-forest-950 relative">
+        <div className="h-screen w-screen flex flex-col justify-center px-6 sm:px-12 lg:px-24 shrink-0 bg-forest-950 relative snap-center">
           {/* Subtle grid background lines */}
           <div className="absolute inset-0 grid grid-cols-12 pointer-events-none opacity-5">
             {[...Array(12)].map((_, i) => (
@@ -164,21 +204,22 @@ const SignatureDishes = () => {
             ))}
           </div>
 
-          <div className="max-w-2xl space-y-6 relative z-10">
+          <div className="max-w-2xl space-y-4 lg:space-y-6 relative z-10">
             <div className="flex items-center gap-2">
               <Compass className="h-4.5 w-4.5 text-primary animate-spin" style={{ animationDuration: '10s' }} />
               <span className="text-xs font-semibold tracking-[6px] uppercase text-primary font-inter">
                 Chapter 03
               </span>
             </div>
-            <h2 className="font-playfair text-5xl sm:text-7xl text-foreground font-semibold leading-[1.1]">
+            <h2 className="font-playfair text-4xl sm:text-5xl lg:text-7xl text-foreground font-semibold leading-[1.1]">
               The Editorial Gastronomy
             </h2>
-            <p className="font-inter text-muted-foreground text-sm sm:text-base leading-relaxed">
+            <p className="font-inter text-muted-foreground text-xs sm:text-sm lg:text-base leading-relaxed">
               Scroll horizontally or drag with your pointer to walk through our signature compositions. Each selection is a micro-narrative of forest harvesting, wood-fire alchemy, and premium luxury presentation.
             </p>
             <div className="inline-flex items-center gap-3 text-primary text-xs tracking-widest font-semibold uppercase animate-pulse">
-              Drag or Scroll Down to Advance Gallery ──→
+              <span className="hidden lg:inline">Drag or Scroll Down to Advance Gallery ──→</span>
+              <span className="lg:hidden inline">Swipe Left to Explore ──→</span>
             </div>
           </div>
         </div>
@@ -187,16 +228,16 @@ const SignatureDishes = () => {
         {DISHES.map((dish) => (
           <div
             key={dish.id}
-            className="h-screen w-screen flex items-center justify-center shrink-0 bg-forest-900/60 px-6 md:px-20 relative overflow-hidden"
+            className="h-screen w-screen flex items-center justify-center shrink-0 bg-forest-900/60 px-6 lg:px-20 relative overflow-hidden py-12 lg:py-0 snap-center"
           >
             {/* Ambient candlelight element per dish */}
             <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-primary/5 rounded-full filter blur-[80px] pointer-events-none animate-candle"></div>
 
-            <div className="container-width grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+            <div className="container-width grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-center relative z-10 w-full">
               
               {/* Left Column: Dish Image with 3D Hover & Steam Simulation */}
               <div className="lg:col-span-6 flex justify-center relative drag-gallery">
-                <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden border border-gold-300/15 shadow-2xl bg-forest-950 group">
+                <div className="relative w-full max-w-[200px] xs:max-w-[240px] sm:max-w-[300px] lg:max-w-md aspect-square rounded-3xl overflow-hidden border border-gold-300/15 shadow-2xl bg-forest-950 group">
                   
                   {/* Glowing gold light sweep hover */}
                   <div className="absolute inset-0 bg-gradient-to-t from-forest-950 via-transparent to-transparent opacity-65 z-10" />
@@ -216,43 +257,43 @@ const SignatureDishes = () => {
                   />
                   
                   {/* Category overlay */}
-                  <span className="absolute top-6 left-6 z-25 text-[9px] tracking-[4px] uppercase bg-forest-950/80 border border-gold-300/10 text-gold-300 px-3 py-1.5 rounded-full backdrop-blur-md">
+                  <span className="absolute top-4 left-4 lg:top-6 lg:left-6 z-25 text-[8px] lg:text-[9px] tracking-[4px] uppercase bg-forest-950/80 border border-gold-300/10 text-gold-300 px-3 py-1.5 rounded-full backdrop-blur-md">
                     {dish.category}
                   </span>
                 </div>
               </div>
 
               {/* Right Column: Culinary specs & Editorial Copy */}
-              <div className="lg:col-span-6 space-y-6 text-left">
+              <div className="lg:col-span-6 space-y-4 lg:space-y-6 text-left w-full">
                 <div className="flex items-center justify-between">
-                  <span className="font-playfair text-6xl text-primary/10 font-bold select-none">{dish.id}</span>
+                  <span className="font-playfair text-4xl lg:text-6xl text-primary/10 font-bold select-none">{dish.id}</span>
                   {dish.recommended && (
-                    <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[9px] font-bold uppercase tracking-wider">
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[8px] lg:text-[9px] font-bold uppercase tracking-wider">
                       <Sparkles className="h-3 w-3 animate-pulse" />
                       Chef Recommendation
                     </div>
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <h3 className="font-playfair text-3xl sm:text-4xl text-foreground font-semibold leading-tight">
+                <div className="space-y-1.5 lg:space-y-2">
+                  <h3 className="font-playfair text-2xl sm:text-3xl lg:text-4xl text-foreground font-semibold leading-tight">
                     {dish.name}
                   </h3>
-                  <p className="font-playfair text-2xl text-primary font-medium">{dish.price}</p>
+                  <p className="font-playfair text-xl lg:text-2xl text-primary font-medium">{dish.price}</p>
                 </div>
 
-                <p className="font-inter text-muted-foreground text-xs sm:text-sm leading-relaxed max-w-lg">
+                <p className="font-inter text-muted-foreground text-xs lg:text-sm leading-relaxed max-w-lg">
                   {dish.description}
                 </p>
 
                 {/* Ingredient nodes list */}
-                <div className="space-y-2">
-                  <span className="font-inter text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Ingredients</span>
-                  <div className="flex flex-wrap gap-2">
+                <div className="space-y-1.5 lg:space-y-2">
+                  <span className="font-inter text-[8px] lg:text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Ingredients</span>
+                  <div className="flex flex-wrap gap-1.5 lg:gap-2">
                     {dish.ingredients.map((ing) => (
                       <span
                         key={ing}
-                        className="font-inter text-[10px] bg-forest-950 border border-gold-300/5 text-gold-300 px-3 py-1.5 rounded-md hover:border-primary/20 hover:text-primary transition-all duration-300"
+                        className="font-inter text-[9px] lg:text-[10px] bg-forest-950 border border-gold-300/5 text-gold-300 px-2.5 py-1 rounded-md hover:border-primary/20 hover:text-primary transition-all duration-300"
                       >
                         {ing}
                       </span>
@@ -266,6 +307,26 @@ const SignatureDishes = () => {
           </div>
         ))}
 
+      </div>
+
+      {/* Centered Scroll indicator dots */}
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-2 z-30">
+        {[0, 1, 2, 3].map((index) => (
+          <button
+            key={index}
+            onClick={() => scrollToSlide(index)}
+            className="group relative p-2"
+            aria-label={`Go to slide ${index + 1}`}
+          >
+            <div
+              className={`h-2.5 rounded-full transition-all duration-500 ${
+                activeIndex === index
+                  ? "w-8 bg-primary shadow-[0_0_10px_rgba(223,185,60,0.8)]"
+                  : "w-2.5 bg-muted-foreground/30 hover:bg-muted-foreground/60"
+              }`}
+            />
+          </button>
+        ))}
       </div>
     </div>
   );
