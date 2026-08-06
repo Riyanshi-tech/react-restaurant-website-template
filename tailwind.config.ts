@@ -63,32 +63,32 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// RestoOne restaurant theme colors
-				resto_one : {
-					50: '#f7f6f3',
-					100: '#edeae3',
-					200: '#dcd6c7',
-					300: '#c4baa5',
-					400: '#b29e85',
-					500: '#a18870',
-					600: '#937a64',
-					700: '#7a6555',
-					800: '#665549',
-					900: '#554840',
-					950: '#2e2620',
+				// Forest Feast luxury theme colors
+				forest: {
+					50: '#f4f6f4',
+					100: '#e2e7e3',
+					200: '#c5cfc7',
+					300: '#9db0a1',
+					400: '#6f8b75',
+					500: '#4e6d54',
+					600: '#3c5541',
+					700: '#314535',
+					800: '#28382c',
+					900: '#1a241c',
+					950: '#050b07',  // base ultra-dark green background
 				},
-				terracotta: {
-					50: '#fef6f3',
-					100: '#feeee6',
-					200: '#fcd9cc',
-					300: '#f9bfa8',
-					400: '#f59673',
-					500: '#f17547',
-					600: '#e25a28',
-					700: '#be471e',
-					800: '#973c1d',
-					900: '#7a341e',
-					950: '#42180c',
+				gold: {
+					50: '#fcfaf3',
+					100: '#f8f2de',
+					200: '#f0e3bc',
+					300: '#e5ce8d',
+					400: '#dfb93c',  // glowing primary gold
+					500: '#cfaa2d',
+					600: '#b28e20',
+					700: '#8e6c1a',
+					800: '#725519',
+					900: '#5e4618',
+					950: '#37270a',
 				}
 			},
 			borderRadius: {

@@ -1,105 +1,269 @@
-
 /* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
-
 @layer base {
   :root {
-    --background: 20 14% 4%;
-    --foreground: 34 20% 95%;
+    /* Luxury Forest Green & Champagne Gold Palette */
+    --background: 140 33% 4%;      /* #020503 - ultra dark forest green */
+    --foreground: 42 28% 91%;      /* #f4eedf - champagne cream */
 
-    --card: 20 14% 6%;
-    --card-foreground: 34 20% 95%;
+    --card: 140 30% 6%;           /* #040905 - deep forest shadow */
+    --card-foreground: 42 28% 91%;
 
-    --popover: 20 14% 6%;
-    --popover-foreground: 34 20% 95%;
+    --popover: 140 30% 6%;
+    --popover-foreground: 42 28% 91%;
 
-    --primary: 31 41% 55%;
-    --primary-foreground: 20 14% 4%;
+    --primary: 43 68% 56%;        /* #dfb93c - glowing premium gold */
+    --primary-foreground: 140 33% 4%;
 
-    --secondary: 32 14% 84%;
-    --secondary-foreground: 20 14% 4%;
+    --secondary: 42 20% 75%;      /* #c6bea9 - warm antique gold/beige */
+    --secondary-foreground: 140 33% 4%;
 
-    --muted: 20 14% 10%;
-    --muted-foreground: 34 20% 65%;
+    --muted: 140 20% 7%;          /* #0a110d - dark moss shadow */
+    --muted-foreground: 42 12% 65%;/* #a59e90 - soft sage sand */
 
-    --accent: 32 25% 25%;
-    --accent-foreground: 34 20% 95%;
+    --accent: 43 45% 20%;         /* #483d1b - glowing amber gold shadow */
+    --accent-foreground: 42 28% 91%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 20 14% 15%;
-    --input: 20 14% 15%;
-    --ring: 31 41% 55%;
+    --border: 140 18% 10%;        /* #101c13 - subtle moss border */
+    --input: 140 18% 10%;
+    --ring: 43 68% 56%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
   }
 
-  .light {
-    --background: 34 30% 98%;
-    --foreground: 20 14% 4%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 20 14% 4%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 20 14% 4%;
-
-    --primary: 31 41% 45%;
-    --primary-foreground: 34 30% 98%;
-
-    --secondary: 32 25% 90%;
-    --secondary-foreground: 20 14% 4%;
-
-    --muted: 32 25% 95%;
-    --muted-foreground: 20 14% 45%;
-
-    --accent: 32 25% 88%;
-    --accent-foreground: 20 14% 4%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 32 25% 85%;
-    --input: 32 25% 85%;
-    --ring: 31 41% 45%;
+  /* Force theme to always be dark to maintain cinematic rainforest ambiance */
+  .light, :root {
+    color-scheme: dark;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border selection:bg-primary/30 selection:text-primary;
   }
 
   body {
-    @apply bg-background text-foreground font-inter;
+    @apply bg-background text-foreground font-inter antialiased overflow-x-hidden;
+    background-color: hsl(var(--background));
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-playfair;
+    @apply font-playfair tracking-tight;
+  }
+  
+  /* Lenis smooth scrolling config */
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+  
+  .lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  
+  .lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  
+  .lenis-stopped {
+    overflow: hidden;
+  }
+  
+  .lenis-scrolling iframe {
+    pointer-events: none;
   }
 
-  html {
-    scroll-behavior: smooth;
+  /* Hide default cursor on desktop when custom cursor is active */
+  @media (pointer: fine) {
+    body {
+      cursor: none;
+    }
+    a, button, [role="button"], input, select, textarea {
+      cursor: none;
+    }
+  }
+
+  /* Premium scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
   }
 }
 
 @layer components {
+  /* Cinematic utilities */
   .hero-gradient {
-    background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(0, 0, 0, 0.6));
+    background: linear-gradient(180deg, rgba(2, 5, 3, 0.4) 0%, rgba(2, 5, 3, 0.9) 100%);
   }
   
   .section-padding {
-    @apply py-12 md:py-20;
+    @apply py-24 md:py-32;
   }
   
   .container-width {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply max-w-7xl mx-auto px-6 sm:px-8 lg:px-12;
   }
+
+  /* Premium luxury glassmorphism */
+  .bg-forest-glass {
+    background: rgba(4, 9, 5, 0.65);
+    backdrop-filter: blur(16px) saturate(120%);
+    -webkit-backdrop-filter: blur(16px) saturate(120%);
+    border: 1px solid rgba(223, 185, 60, 0.08);
+  }
+
+  .bg-gold-glass {
+    background: rgba(223, 185, 60, 0.03);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(223, 185, 60, 0.15);
+  }
+
+  /* Candlelight glow pulse animation */
+  @keyframes candlePulse {
+    0%, 100% {
+      opacity: 0.15;
+      transform: scale(1) translateY(0);
+      filter: blur(40px);
+    }
+    50% {
+      opacity: 0.28;
+      transform: scale(1.1) translateY(-5px);
+      filter: blur(45px);
+    }
+  }
+
+  .animate-candle {
+    animation: candlePulse 6s infinite ease-in-out;
+  }
+
+  /* Firefly flash */
+  @keyframes fireflyFlash {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+
+  /* Steam floating up for dishes & coffee */
+  @keyframes steamUp {
+    0% {
+      transform: translateY(0) scaleX(1);
+      opacity: 0;
+    }
+    15% {
+      opacity: 0.3;
+    }
+    50% {
+      transform: translateY(-50px) scaleX(1.3) rotate(5deg);
+      opacity: 0.15;
+    }
+    100% {
+      transform: translateY(-100px) scaleX(1.6) rotate(-5deg);
+      opacity: 0;
+    }
+  }
+
+  .steam-particle {
+    animation: steamUp 5s infinite linear;
+  }
+
+  /* Gold sweep hover card effect */
+  .gold-sweep {
+    position: relative;
+    overflow: hidden;
+  }
+  .gold-sweep::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(223, 185, 60, 0.15) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: skewX(-25deg);
+    transition: 0.75s;
+  }
+  .gold-sweep:hover::after {
+    left: 150%;
+  }
+}
+
+/* Custom cursor styling classes */
+.custom-cursor {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(223, 185, 60, 0.4);
+  border-radius: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9999;
+  transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+              height 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+              background-color 0.3s ease, 
+              border-color 0.3s ease;
+}
+
+.custom-cursor-dot {
+  width: 6px;
+  height: 6px;
+  background-color: hsl(var(--primary));
+  border-radius: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 10000;
+  transition: transform 0.1s ease;
+  box-shadow: 0 0 10px rgba(223, 185, 60, 0.8);
+}
+
+.custom-cursor-hover {
+  width: 56px;
+  height: 56px;
+  background-color: rgba(223, 185, 60, 0.08);
+  border-color: rgba(223, 185, 60, 0.8);
+}
+
+.custom-cursor-drag {
+  width: 70px;
+  height: 70px;
+  background-color: rgba(223, 185, 60, 0.05);
+  border-color: rgba(223, 185, 60, 0.5);
+}
+
+.custom-cursor-drag::before {
+  content: 'DRAG';
+  font-family: 'Inter', sans-serif;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: hsl(var(--primary));
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
