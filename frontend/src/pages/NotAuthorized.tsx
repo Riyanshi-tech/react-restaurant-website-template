@@ -4,13 +4,13 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const NotAuthorized = () => {
-  const { user } = useAuth();
+  const { user, activeRole, viewingAs, setViewingAs } = useAuth();
   const navigate = useNavigate();
 
   const handleGoBack = () => {
     if (user) {
-      // Redirect back to their dashboard role
-      navigate(`/dashboard/${user.role.toLowerCase()}`, { replace: true });
+      // Redirect back to their active simulated or actual dashboard role
+      navigate(`/dashboard/${activeRole.toLowerCase()}`, { replace: true });
     } else {
       navigate('/dashboard', { replace: true });
     }
@@ -30,7 +30,7 @@ const NotAuthorized = () => {
           </p>
         </div>
 
-        <div className="pt-2">
+        <div className="pt-2 flex flex-col gap-3">
           <Button 
             onClick={handleGoBack}
             className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold uppercase tracking-wider text-xs px-6 py-5 rounded-full flex items-center justify-center gap-2 mx-auto transition-transform hover:-translate-y-0.5"
@@ -38,6 +38,18 @@ const NotAuthorized = () => {
             <ArrowLeft className="h-4 w-4" />
             Back to Dashboard
           </Button>
+
+          {viewingAs && (
+            <button
+              onClick={() => {
+                setViewingAs(null);
+                navigate('/dashboard/admin', { replace: true });
+              }}
+              className="text-xs text-amber-400 hover:text-amber-300 font-semibold uppercase tracking-wider underline mt-2 block mx-auto transition-colors"
+            >
+              Stop Simulation & Return to Admin
+            </button>
+          )}
         </div>
       </div>
     </div>

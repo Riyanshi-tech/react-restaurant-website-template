@@ -81,22 +81,16 @@
 
   /* Hide default cursor on desktop when custom cursor is active */
   @media (pointer: fine) {
-    body {
+    body.has-custom-cursor {
       cursor: none;
     }
-    a, button, [role="button"], input, select, textarea {
+    body.has-custom-cursor a,
+    body.has-custom-cursor button,
+    body.has-custom-cursor [role="button"],
+    body.has-custom-cursor input,
+    body.has-custom-cursor select,
+    body.has-custom-cursor textarea {
       cursor: none;
-    }
-    
-    /* Restore standard system cursor for dashboard/login panel interactions */
-    .dashboard-view,
-    .dashboard-view a,
-    .dashboard-view button,
-    .dashboard-view [role="button"],
-    .dashboard-view input,
-    .dashboard-view select,
-    .dashboard-view textarea {
-      cursor: auto !important;
     }
   }
 

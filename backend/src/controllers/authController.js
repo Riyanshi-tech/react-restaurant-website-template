@@ -31,6 +31,11 @@ export const login = async (req, res, next) => {
       throw new ApiError(401, 'Invalid email or password');
     }
 
+    // Check if user is active
+    if (!user.isActive) {
+      throw new ApiError(403, 'Your account has been deactivated. Please contact the administrator.');
+    }
+
     // 3. Check if password matches
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
@@ -61,7 +66,9 @@ export const login = async (req, res, next) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        isActive: user.isActive,
+        permissions: user.permissions
       }
     });
   } catch (error) {

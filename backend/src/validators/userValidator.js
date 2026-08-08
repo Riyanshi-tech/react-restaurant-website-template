@@ -13,7 +13,9 @@ export const createUserSchema = z.object({
     .min(6, 'Password must be at least 6 characters'),
   role: z.enum(['ADMIN', 'MANAGER', 'CASHIER'], {
     errorMap: () => ({ message: 'Role must be ADMIN, MANAGER, or CASHIER' })
-  })
+  }),
+  isActive: z.boolean().optional(),
+  permissions: z.array(z.string()).optional()
 });
 
 export const updateUserSchema = z.object({
@@ -32,5 +34,7 @@ export const updateUserSchema = z.object({
     .optional(),
   role: z.enum(['ADMIN', 'MANAGER', 'CASHIER'], {
     errorMap: () => ({ message: 'Role must be ADMIN, MANAGER, or CASHIER' })
-  }).optional()
+  }).optional(),
+  isActive: z.boolean().optional(),
+  permissions: z.array(z.string()).optional()
 });

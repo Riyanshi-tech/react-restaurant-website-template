@@ -3,19 +3,21 @@ import {
   createUser, 
   getUsers, 
   updateUser, 
-  deleteUser 
+  deleteUser,
+  logAccessAs
 } from '../controllers/userController.js';
-import { authenticateUser, authorizeRoles } from '../middleware/authMiddleware.js';
+import { authenticateUser, authorizePermission } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 // Apply authentication middleware to all user routes
 router.use(authenticateUser);
 
-// CRUD endpoints with Role-Based Access Control (RBAC)
-router.post('/', authorizeRoles('ADMIN'), createUser);
-router.get('/', authorizeRoles('ADMIN', 'MANAGER'), getUsers);
-router.put('/:id', authorizeRoles('ADMIN'), updateUser);
-router.delete('/:id', authorizeRoles('ADMIN'), deleteUser);
+// CRUD endpoints secured with permission-based access control
+router.post('/', authorizePermission('users.write'), createUser);
+router.get('/', authorizePermission('users.read'), getUsers);
+router.put('/:id', authorizePermission('users.write'), updateUser);
+router.delete('/:id', authorizePermission('users.write'), deleteUser);
+router.post('/:id/access-as', authorizePermission('users.write'), logAccessAs);
 
 export default router;

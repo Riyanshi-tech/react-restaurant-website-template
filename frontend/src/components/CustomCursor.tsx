@@ -15,9 +15,15 @@ const CustomCursor = () => {
   const cursorYSpring = useSpring(cursorY, springConfig);
 
   useEffect(() => {
+    // Add custom cursor helper class to body for CSS selector targeting
+    document.body.classList.add('has-custom-cursor');
+    
     // Check if the device is a touch screen (hide cursor on touch devices)
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    if (isTouchDevice) return;
+    if (isTouchDevice) {
+      document.body.classList.remove('has-custom-cursor');
+      return;
+    }
 
     setIsVisible(true);
 
@@ -71,6 +77,7 @@ const CustomCursor = () => {
     window.addEventListener("mouseup", handleMouseUp);
 
     return () => {
+      document.body.classList.remove('has-custom-cursor');
       window.removeEventListener("mousemove", moveCursor);
       window.removeEventListener("mouseover", handleMouseOver);
       document.removeEventListener("mouseleave", handleMouseLeaveWindow);

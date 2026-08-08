@@ -5,6 +5,9 @@ import { ApiError } from './utils/apiError.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import auditRoutes from './routes/auditRoutes.js';
+import tableRoutes from './routes/tableRoutes.js';
+import publicTableRoutes from './routes/publicTableRoutes.js';
 
 const app = express();
 
@@ -28,6 +31,9 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/audit-logs', auditRoutes);
+app.use('/api/tables', tableRoutes);
+app.use('/api/public/tables', publicTableRoutes);
 
 // 3. UNHANDLED ROUTES HANDLER
 app.all('*', (req, res, next) => {

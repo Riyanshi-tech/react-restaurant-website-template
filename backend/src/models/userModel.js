@@ -33,6 +33,42 @@ const userSchema = new mongoose.Schema(
         message: '{VALUE} is not a valid role. Allowed roles are ADMIN, MANAGER, CASHIER'
       },
       default: 'CASHIER'
+    },
+    isActive: {
+      type: Boolean,
+      default: true
+    },
+    permissions: {
+      type: [String],
+      default: function() {
+        if (this.role === 'ADMIN') {
+          return [
+            'menu.read', 'menu.write',
+            'booking.read', 'booking.write',
+            'staff.read', 'staff.write',
+            'logs.read',
+            'pos.read', 'pos.write',
+            'order.read', 'order.write',
+            'sales.read',
+            'users.read', 'users.write',
+            'settings.read', 'settings.write'
+          ];
+        } else if (this.role === 'MANAGER') {
+          return [
+            'menu.read', 'menu.write',
+            'booking.read', 'booking.write',
+            'staff.read',
+            'logs.read'
+          ];
+        } else if (this.role === 'CASHIER') {
+          return [
+            'pos.read', 'pos.write',
+            'order.read', 'order.write',
+            'sales.read'
+          ];
+        }
+        return [];
+      }
     }
   },
   {

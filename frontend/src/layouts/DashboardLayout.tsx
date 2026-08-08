@@ -13,11 +13,12 @@ import {
   DollarSign, 
   FileText, 
   ShoppingBag,
-  BellRing
+  BellRing,
+  QrCode
 } from 'lucide-react';
 
 const DashboardLayout: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, viewingAs, setViewingAs, activeRole } = useAuth();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -25,15 +26,23 @@ const DashboardLayout: React.FC = () => {
 
   // Determine sidebar navigation links depending on role
   const getNavLinks = () => {
-    const common = [{ name: 'Overview', href: `/dashboard/${user.role.toLowerCase()}`, icon: TrendingUp }];
+    if (!activeRole) return [];
+    
+    const common = [{ name: 'Overview', href: `/dashboard/${activeRole.toLowerCase()}`, icon: TrendingUp }];
 
-    switch (user.role) {
+    switch (activeRole) {
       case 'ADMIN':
         return [
           ...common,
           { name: 'User Management', href: '/dashboard/admin/users', icon: Users },
+          { name: 'Table Management', href: '/dashboard/admin/tables', icon: QrCode },
           { name: 'Menu Inventory', href: '/dashboard/admin/menu', icon: ChefHat },
           { name: 'Bookings', href: '/dashboard/admin/bookings', icon: CalendarDays },
+          { name: 'Staff List', href: '/dashboard/manager/staff', icon: Users },
+          { name: 'POS / Billing', href: '/dashboard/pos', icon: DollarSign },
+          { name: 'Active Orders', href: '/dashboard/cashier/orders', icon: ShoppingBag },
+          { name: 'Sales Ledger', href: '/dashboard/cashier/ledger', icon: FileText },
+          { name: 'Operational Logs', href: '/dashboard/manager/logs', icon: FileText },
           { name: 'System Settings', href: '/dashboard/admin/settings', icon: Settings },
         ];
       case 'MANAGER':
@@ -41,12 +50,12 @@ const DashboardLayout: React.FC = () => {
           ...common,
           { name: 'Menu Inventory', href: '/dashboard/manager/menu', icon: ChefHat },
           { name: 'Bookings', href: '/dashboard/manager/bookings', icon: CalendarDays },
-          { name: 'Staff list', href: '/dashboard/manager/staff', icon: Users },
+          { name: 'Staff List', href: '/dashboard/manager/staff', icon: Users },
           { name: 'Operational Logs', href: '/dashboard/manager/logs', icon: FileText },
         ];
       case 'CASHIER':
         return [
-          { name: 'POS / Billing', href: '/dashboard/cashier', icon: DollarSign },
+          { name: 'POS / Billing', href: '/dashboard/pos', icon: DollarSign },
           { name: 'Active Orders', href: '/dashboard/cashier/orders', icon: ShoppingBag },
           { name: 'Sales Ledger', href: '/dashboard/cashier/ledger', icon: FileText },
         ];
@@ -101,7 +110,9 @@ const DashboardLayout: React.FC = () => {
             </div>
             <div className="overflow-hidden">
               <h4 className="text-xs font-semibold truncate">{user.name}</h4>
-              <span className="text-[10px] text-primary font-mono tracking-wider block mt-0.5">{user.role}</span>
+              <span className="text-[10px] text-primary font-mono tracking-wider block mt-0.5">
+                {viewingAs ? `${viewingAs} (Simulated)` : user.role}
+              </span>
             </div>
           </div>
           <button
@@ -169,7 +180,9 @@ const DashboardLayout: React.FC = () => {
             </div>
             <div>
               <h4 className="text-xs font-semibold">{user.name}</h4>
-              <span className="text-[10px] text-primary font-mono tracking-wider">{user.role}</span>
+              <span className="text-[10px] text-primary font-mono tracking-wider">
+                {viewingAs ? `${viewingAs} (Simulated)` : user.role}
+              </span>
             </div>
           </div>
           <button
@@ -184,6 +197,25 @@ const DashboardLayout: React.FC = () => {
 
       {/* 3. CONTENT AREA CONTAINER */}
       <div className="flex-1 flex flex-col overflow-hidden">
+        {/* VIEW AS SIMULATION BANNER */}
+        {viewingAs && (
+          <div className="bg-amber-500/10 border-b border-amber-500/20 px-6 py-2.5 flex items-center justify-between text-xs text-amber-400 font-medium tracking-wide animate-fade-in shrink-0">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+              <span>You are viewing the system as <span className="font-bold text-amber-300 uppercase">{viewingAs.toLowerCase()}</span></span>
+            </div>
+            <button
+              onClick={() => {
+                setViewingAs(null);
+                window.location.href = '/dashboard/admin';
+              }}
+              className="px-3 py-1 bg-amber-500/20 hover:bg-amber-500 hover:text-black rounded-lg border border-amber-500/30 font-semibold uppercase tracking-wider text-[10px] transition-all duration-200"
+            >
+              Return to Admin
+            </button>
+          </div>
+        )}
+
         {/* TOP NAVBAR */}
         <header className="h-16 flex items-center justify-between px-6 bg-forest-900/60 border-b border-gold-300/10 backdrop-blur-md shrink-0">
           {/* Mobile menu toggle */}
@@ -211,7 +243,9 @@ const DashboardLayout: React.FC = () => {
             <div className="flex items-center gap-2.5 border-l border-gold-300/10 pl-4">
               <div className="text-right hidden md:block">
                 <p className="text-xs font-semibold">{user.name}</p>
-                <span className="text-[10px] text-muted-foreground capitalize font-medium">{user.role.toLowerCase()}</span>
+                <span className="text-[10px] text-muted-foreground capitalize font-medium">
+                  {viewingAs ? `${viewingAs.toLowerCase()} (simulated)` : user.role.toLowerCase()}
+                </span>
               </div>
               <div className="w-8 h-8 rounded-full bg-gold-300/10 border border-gold-300/20 flex items-center justify-center font-bold text-primary text-xs">
                 {user.name.slice(0, 1).toUpperCase()}
