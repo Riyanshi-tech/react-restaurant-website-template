@@ -87,6 +87,17 @@
     a, button, [role="button"], input, select, textarea {
       cursor: none;
     }
+    
+    /* Restore standard system cursor for dashboard/login panel interactions */
+    .dashboard-view,
+    .dashboard-view a,
+    .dashboard-view button,
+    .dashboard-view [role="button"],
+    .dashboard-view input,
+    .dashboard-view select,
+    .dashboard-view textarea {
+      cursor: auto !important;
+    }
   }
 
   /* Premium scrollbar */

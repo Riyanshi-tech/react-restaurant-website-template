@@ -43,6 +43,9 @@ const Header = () => {
     if (target) {
       target.scrollIntoView({ behavior: "smooth" });
       setIsMenuOpen(false);
+    } else {
+      // Navigate to homepage with hash if not on landing page
+      window.location.href = `/${href}`;
     }
   };
 
