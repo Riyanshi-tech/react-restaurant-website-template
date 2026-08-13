@@ -1,6 +1,8 @@
 import Table from '../models/tableModel.js';
 import MenuItem from '../models/menuItemModel.js';
 import Order from '../models/orderModel.js';
+import mongoose from 'mongoose';
+import { getOrCreateSettings } from '../models/settingsModel.js';
 import { ApiError } from '../utils/apiError.js';
 import { sendSuccess } from '../utils/responseFormatter.js';
 
@@ -9,6 +11,34 @@ const RESTAURANT_INFO = {
   logo: '/logo.webp',
   address: '100 Mossy Trail, Forest Valley',
   phone: '+1 (555) FOREST-HUB'
+};
+
+const normalizePhone = (phone) => String(phone || '').replace(/\D/g, '');
+
+/**
+ * @desc    Guest order history by phone
+ * @route   GET /api/public/tables/guest/orders?phone=
+ * @access  Public
+ */
+export const getGuestOrdersByPhone = async (req, res, next) => {
+  try {
+    const phone = normalizePhone(req.query.phone);
+    if (phone.length < 8) {
+      throw new ApiError(400, 'Valid phone number is required');
+    }
+
+    const orders = await Order.find({ guestPhone: phone })
+      .populate('table', 'tableNumber name location slug')
+      .sort({ createdAt: -1 })
+      .limit(40);
+
+    return sendSuccess(res, 'Guest orders retrieved', {
+      orders,
+      count: orders.length
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 /**
@@ -29,17 +59,14 @@ export const getPublicTableDetails = async (req, res, next) => {
       throw new ApiError(400, 'This table is currently inactive and unavailable');
     }
 
-    // Fetch active order details if occupied
     let activeOrder = null;
     if (table.status === 'OCCUPIED' && table.activeOrder) {
       activeOrder = await Order.findById(table.activeOrder);
     }
 
-    // Fetch menu items from DB
     const menuItems = await MenuItem.find().sort({ category: 1, name: 1 });
     const categories = ['breakfast', 'lunch', 'dinner', 'desserts', 'drinks'];
 
-    // Construct DTO
     const payload = {
       table: {
         id: table._id,
@@ -66,6 +93,8 @@ export const getPublicTableDetails = async (req, res, next) => {
       activeOrder: activeOrder ? {
         id: activeOrder._id,
         orderNumber: activeOrder.orderNumber,
+        guestName: activeOrder.guestName,
+        guestPhone: activeOrder.guestPhone,
         items: activeOrder.items,
         total: activeOrder.total,
         status: activeOrder.status,
@@ -91,7 +120,16 @@ export const getPublicTableDetails = async (req, res, next) => {
 export const placeTableOrder = async (req, res, next) => {
   try {
     const { slug } = req.params;
-    const { items } = req.body; // Array of { menuItemId, quantity }
+    const { items, guestName, guestPhone } = req.body;
+
+    const name = String(guestName || '').trim();
+    const phone = normalizePhone(guestPhone);
+    if (!name || name.length < 2) {
+      throw new ApiError(400, 'Guest name is required');
+    }
+    if (phone.length < 8) {
+      throw new ApiError(400, 'Valid phone number is required');
+    }
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       throw new ApiError(400, 'Order must contain at least one item');
@@ -106,7 +144,6 @@ export const placeTableOrder = async (req, res, next) => {
       throw new ApiError(400, 'Ordering is disabled for this table');
     }
 
-    // Build order items list by resolving DB MenuItems
     const orderItems = [];
     let orderTotal = 0;
 
@@ -121,9 +158,7 @@ export const placeTableOrder = async (req, res, next) => {
         throw new ApiError(400, `Invalid quantity for item ${menuItem.name}`);
       }
 
-      const itemTotal = menuItem.price * qty;
-      orderTotal += itemTotal;
-
+      orderTotal += menuItem.price * qty;
       orderItems.push({
         menuItem: menuItem._id,
         name: menuItem.name,
@@ -134,13 +169,10 @@ export const placeTableOrder = async (req, res, next) => {
 
     let order;
 
-    // Check if table already has an active unpaid order
     if (table.status === 'OCCUPIED' && table.activeOrder) {
       order = await Order.findById(table.activeOrder);
       if (order && order.paymentStatus === 'UNPAID' && order.status !== 'CANCELLED') {
-        // Append items to existing active order session
         for (const newItem of orderItems) {
-          // Check if item already exists in current order to merge
           const existingItemIndex = order.items.findIndex(
             (i) => i.menuItem.toString() === newItem.menuItem.toString()
           );
@@ -151,13 +183,15 @@ export const placeTableOrder = async (req, res, next) => {
           }
         }
         order.total += orderTotal;
+        order.guestName = name;
+        order.guestPhone = phone;
         await order.save();
       } else {
-        // Create new active order
-        const orderNumber = `FH-${1000 + Math.floor(Math.random() * 9000)}`;
         order = await Order.create({
-          orderNumber,
+          orderNumber: `FH-${1000 + Math.floor(Math.random() * 9000)}`,
           table: table._id,
+          guestName: name,
+          guestPhone: phone,
           items: orderItems,
           total: orderTotal,
           status: 'PENDING',
@@ -166,11 +200,11 @@ export const placeTableOrder = async (req, res, next) => {
         table.activeOrder = order._id;
       }
     } else {
-      // Create fresh active order
-      const orderNumber = `FH-${1000 + Math.floor(Math.random() * 9000)}`;
       order = await Order.create({
-        orderNumber,
+        orderNumber: `FH-${1000 + Math.floor(Math.random() * 9000)}`,
         table: table._id,
+        guestName: name,
+        guestPhone: phone,
         items: orderItems,
         total: orderTotal,
         status: 'PENDING',
@@ -183,6 +217,50 @@ export const placeTableOrder = async (req, res, next) => {
     await table.save();
 
     return sendSuccess(res, 'Order placed successfully', { order }, 201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const billingShape = (doc) => ({
+  restaurantName: doc.restaurantName,
+  address: doc.address,
+  phone: doc.phone,
+  gstin: doc.gstin,
+  gstPercent: doc.gstPercent,
+  cgstPercent: doc.cgstPercent,
+  sgstPercent: doc.sgstPercent,
+  whatsappCountryCode: doc.whatsappCountryCode,
+  billFooter: doc.billFooter
+});
+
+/**
+ * @desc    Public bill by order number or MongoDB id
+ * @route   GET /api/public/bills/:slug
+ * @access  Public
+ */
+export const getPublicBill = async (req, res, next) => {
+  try {
+    const slug = decodeURIComponent(String(req.params.slug || '')).trim();
+    if (!slug) throw new ApiError(400, 'Bill id is required');
+
+    let order = null;
+    if (mongoose.isValidObjectId(slug)) {
+      order = await Order.findById(slug).populate('table', 'tableNumber name location');
+    }
+    if (!order) {
+      order = await Order.findOne({ orderNumber: slug }).populate(
+        'table',
+        'tableNumber name location'
+      );
+    }
+    if (!order) throw new ApiError(404, 'Bill not found');
+
+    const settings = await getOrCreateSettings();
+    return sendSuccess(res, 'Bill retrieved', {
+      order,
+      billing: billingShape(settings)
+    });
   } catch (error) {
     next(error);
   }

@@ -34,6 +34,15 @@ const orderSchema = new mongoose.Schema({
     ref: 'Table',
     required: true,
   },
+  guestName: {
+    type: String,
+    trim: true,
+  },
+  guestPhone: {
+    type: String,
+    trim: true,
+    index: true,
+  },
   items: [orderItemSchema],
   total: {
     type: Number,

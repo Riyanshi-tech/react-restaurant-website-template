@@ -1,5 +1,5 @@
 /* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -114,7 +114,23 @@
 @layer components {
   /* Cinematic utilities */
   .hero-gradient {
-    background: linear-gradient(180deg, rgba(2, 5, 3, 0.4) 0%, rgba(2, 5, 3, 0.9) 100%);
+    background:
+      linear-gradient(105deg, rgba(2, 5, 3, 0.92) 0%, rgba(2, 5, 3, 0.55) 42%, rgba(2, 5, 3, 0.25) 68%, rgba(2, 5, 3, 0.75) 100%),
+      linear-gradient(180deg, rgba(2, 5, 3, 0.35) 0%, rgba(2, 5, 3, 0.15) 40%, rgba(2, 5, 3, 0.88) 100%);
+  }
+
+  .hero-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.045;
+    mix-blend-mode: overlay;
+  }
+
+  .hero-vignette {
+    background: radial-gradient(ellipse 80% 70% at 65% 45%, transparent 0%, rgba(2, 5, 3, 0.55) 100%);
+  }
+
+  .hero-line-reveal {
+    clip-path: inset(0 0 100% 0);
   }
   
   .section-padding {

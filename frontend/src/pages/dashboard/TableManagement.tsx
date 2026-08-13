@@ -20,6 +20,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { ModalPortal } from '@/components/ModalPortal';
 
 const TableManagement: React.FC = () => {
   const [tables, setTables] = useState<Table[]>([]);
@@ -272,7 +273,7 @@ const TableManagement: React.FC = () => {
   const inactiveTables = tables.filter(t => !t.isActive).length;
 
   return (
-    <div className="space-y-6" data-aos="fade-up">
+    <div className="space-y-6">
       {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -422,11 +423,12 @@ const TableManagement: React.FC = () => {
 
       {/* CREATE DIALOG */}
       {isCreateOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-md bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative">
+        <ModalPortal>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => setIsCreateOpen(false)}
-              className="absolute top-4 right-4 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
+              className="absolute top-4 right-4 z-10 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
             >
               <X className="h-4 w-4" />
             </button>
@@ -506,15 +508,17 @@ const TableManagement: React.FC = () => {
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
 
       {/* EDIT DIALOG */}
       {isEditOpen && selectedTable && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-md bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative">
+        <ModalPortal>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => setIsEditOpen(false)}
-              className="absolute top-4 right-4 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
+              className="absolute top-4 right-4 z-10 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
             >
               <X className="h-4 w-4" />
             </button>
@@ -620,15 +624,17 @@ const TableManagement: React.FC = () => {
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
 
       {/* VIEW DETAILS DIALOG */}
       {isViewOpen && selectedTable && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-xl bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative">
+        <ModalPortal>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-xl bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => setIsViewOpen(false)}
-              className="absolute top-4 right-4 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
+              className="absolute top-4 right-4 z-10 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
             >
               <X className="h-4 w-4" />
             </button>
@@ -758,6 +764,7 @@ const TableManagement: React.FC = () => {
             </div>
           </div>
         </div>
+        </ModalPortal>
       )}
     </div>
   );

@@ -9,7 +9,6 @@ import {
   X, 
   ChefHat, 
   TrendingUp, 
-  CalendarDays, 
   DollarSign, 
   FileText, 
   ShoppingBag,
@@ -37,10 +36,10 @@ const DashboardLayout: React.FC = () => {
           { name: 'User Management', href: '/dashboard/admin/users', icon: Users },
           { name: 'Table Management', href: '/dashboard/admin/tables', icon: QrCode },
           { name: 'Menu Inventory', href: '/dashboard/admin/menu', icon: ChefHat },
-          { name: 'Bookings', href: '/dashboard/admin/bookings', icon: CalendarDays },
           { name: 'Staff List', href: '/dashboard/manager/staff', icon: Users },
           { name: 'POS / Billing', href: '/dashboard/pos', icon: DollarSign },
           { name: 'Active Orders', href: '/dashboard/cashier/orders', icon: ShoppingBag },
+          { name: 'All Orders', href: '/dashboard/cashier/all-orders', icon: FileText },
           { name: 'Sales Ledger', href: '/dashboard/cashier/ledger', icon: FileText },
           { name: 'Operational Logs', href: '/dashboard/manager/logs', icon: FileText },
           { name: 'System Settings', href: '/dashboard/admin/settings', icon: Settings },
@@ -49,7 +48,6 @@ const DashboardLayout: React.FC = () => {
         return [
           ...common,
           { name: 'Menu Inventory', href: '/dashboard/manager/menu', icon: ChefHat },
-          { name: 'Bookings', href: '/dashboard/manager/bookings', icon: CalendarDays },
           { name: 'Staff List', href: '/dashboard/manager/staff', icon: Users },
           { name: 'Operational Logs', href: '/dashboard/manager/logs', icon: FileText },
         ];
@@ -57,6 +55,7 @@ const DashboardLayout: React.FC = () => {
         return [
           { name: 'POS / Billing', href: '/dashboard/pos', icon: DollarSign },
           { name: 'Active Orders', href: '/dashboard/cashier/orders', icon: ShoppingBag },
+          { name: 'All Orders', href: '/dashboard/cashier/all-orders', icon: FileText },
           { name: 'Sales Ledger', href: '/dashboard/cashier/ledger', icon: FileText },
         ];
       default:

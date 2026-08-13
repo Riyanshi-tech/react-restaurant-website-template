@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { ModalPortal } from '@/components/ModalPortal';
 
 const DEFAULT_PERMISSIONS: Record<UserRole, string[]> = {
   ADMIN: [
@@ -284,7 +285,7 @@ const UserManagement: React.FC = () => {
   const cashierCount = users.filter(u => u.role === 'CASHIER').length;
 
   return (
-    <div className="space-y-6" data-aos="fade-up">
+    <div className="space-y-6">
       {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -439,11 +440,12 @@ const UserManagement: React.FC = () => {
 
       {/* CREATE MODAL */}
       {isCreateOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-md bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative">
+        <ModalPortal>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => setIsCreateOpen(false)}
-              className="absolute top-4 right-4 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
+              className="absolute top-4 right-4 z-10 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
             >
               <X className="h-4 w-4" />
             </button>
@@ -518,15 +520,17 @@ const UserManagement: React.FC = () => {
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
 
       {/* EDIT MODAL */}
       {isEditOpen && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-md bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative">
+        <ModalPortal>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => setIsEditOpen(false)}
-              className="absolute top-4 right-4 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
+              className="absolute top-4 right-4 z-10 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
             >
               <X className="h-4 w-4" />
             </button>
@@ -589,15 +593,17 @@ const UserManagement: React.FC = () => {
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
 
       {/* RESET PASSWORD MODAL */}
       {isPasswordOpen && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-md bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative">
+        <ModalPortal>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => setIsPasswordOpen(false)}
-              className="absolute top-4 right-4 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
+              className="absolute top-4 right-4 z-10 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
             >
               <X className="h-4 w-4" />
             </button>
@@ -641,15 +647,17 @@ const UserManagement: React.FC = () => {
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
 
       {/* EDIT PERMISSIONS MODAL */}
       {isPermissionsOpen && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-lg bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative">
+        <ModalPortal>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-lg bg-forest-950 border border-gold-300/15 rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => setIsPermissionsOpen(false)}
-              className="absolute top-4 right-4 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
+              className="absolute top-4 right-4 z-10 p-1.5 bg-forest-900/80 hover:bg-forest-800 border border-gold-300/10 rounded-full transition-colors text-muted-foreground"
             >
               <X className="h-4 w-4" />
             </button>
@@ -728,6 +736,7 @@ const UserManagement: React.FC = () => {
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
     </div>
   );

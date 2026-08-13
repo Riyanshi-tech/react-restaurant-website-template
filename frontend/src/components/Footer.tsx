@@ -10,7 +10,6 @@ const NAV_LINKS = [
   { name: "Ambience", href: "#ambience" },
   { name: "Signature Dishes", href: "#signature" },
   { name: "Menu", href: "#menu" },
-  { name: "Reservation", href: "#reservation" }
 ];
 
 const Footer = () => {

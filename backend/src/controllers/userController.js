@@ -12,25 +12,29 @@ import { createUserSchema, updateUserSchema } from '../validators/userValidator.
 const DEFAULT_PERMISSIONS = {
   ADMIN: [
     'menu.read', 'menu.write',
-    'booking.read', 'booking.write',
     'staff.read', 'staff.write',
     'logs.read',
     'pos.read', 'pos.write',
     'order.read', 'order.write',
     'sales.read',
     'users.read', 'users.write',
-    'settings.read', 'settings.write'
+    'settings.read', 'settings.write',
+    'tables.read', 'tables.create', 'tables.update', 'tables.delete', 'tables.qr.generate'
   ],
   MANAGER: [
     'menu.read', 'menu.write',
-    'booking.read', 'booking.write',
     'staff.read',
-    'logs.read'
+    'logs.read',
+    'order.read',
+    'users.read',
+    'tables.read', 'tables.create', 'tables.update', 'tables.delete', 'tables.qr.generate'
   ],
   CASHIER: [
     'pos.read', 'pos.write',
     'order.read', 'order.write',
-    'sales.read'
+    'sales.read',
+    'menu.read',
+    'tables.read'
   ]
 };
 

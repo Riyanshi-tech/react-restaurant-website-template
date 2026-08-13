@@ -1,115 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles } from "lucide-react";
-import dishSteak from "@/assets/images/dish-steak.webp";
-import dishCoffee from "@/assets/images/dish-coffee.webp";
-import ourStory from "@/assets/images/our-story.webp";
-import ambience1 from "@/assets/images/ambience-1.webp";
-import jungleHero from "@/assets/images/jungle-hero.webp";
-import heroBg from "@/assets/images/hero-bg.webp";
-
-type MenuItem = {
-  id: string;
-  name: string;
-  price: string;
-  category: "breakfast" | "lunch" | "dinner" | "desserts" | "drinks";
-  description: string;
-  tag?: string;
-  image: string;
-};
-
-const MENU_ITEMS: MenuItem[] = [
-  // Breakfast
-  {
-    id: "b1",
-    name: "Wild Chanterelle Frittata",
-    price: "$26",
-    category: "breakfast",
-    description: "Fluffy forest hen eggs baked with wild-harvested chanterelle mushrooms, local fontina cheese, and fresh sage greens.",
-    tag: "Staff Choice",
-    image: ourStory
-  },
-  {
-    id: "b2",
-    name: "Forest Honey & Oats Parfait",
-    price: "$19",
-    category: "breakfast",
-    description: "Creamy house-made sheep yogurt, organic wild honey, toasted heirloom oats, and seasonal pine-cone berry jam.",
-    image: dishCoffee
-  },
-  // Lunch
-  {
-    id: "l1",
-    name: "Smoked Venison Flatbread",
-    price: "$34",
-    category: "lunch",
-    description: "Thin-crust wood-fired flatbread topped with cured venison strips, caramelized forest onions, and a wild huckleberry reduction.",
-    tag: "Signature",
-    image: dishSteak
-  },
-  {
-    id: "l2",
-    name: "Rainforest Botanist Salad",
-    price: "$24",
-    category: "lunch",
-    description: "Lush moss greens, organic micro-herbs, roasted walnuts, shaved radish, and a sparkling citrus pine-needle vinaigrette.",
-    image: ambience1
-  },
-  // Dinner
-  {
-    id: "dn1",
-    name: "Cedar-Planked Stream Trout",
-    price: "$48",
-    category: "dinner",
-    description: "Freshly caught local stream trout slow-grilled on aromatic cedar planks, served with wild ramp purée and blistered vine tomatoes.",
-    tag: "Highly Recommended",
-    image: jungleHero
-  },
-  {
-    id: "dn2",
-    name: "Pine-Crusted Rack of Lamb",
-    price: "$58",
-    category: "dinner",
-    description: "Tender grass-fed lamb rack encrusted with crushed pine nuts and herbs, roasted parsnips, and a rich bone-marrow broth.",
-    image: dishSteak
-  },
-  // Desserts
-  {
-    id: "ds1",
-    name: "Wild Blackberry Lavender Tart",
-    price: "$18",
-    category: "desserts",
-    description: "Crispy sweet crust filled with fresh blackberries, infused with local mountain lavender oil, and topped with spun sugar.",
-    tag: "Delicate",
-    image: ourStory
-  },
-  {
-    id: "ds2",
-    name: "Spruce-Infused Mousse",
-    price: "$16",
-    category: "desserts",
-    description: "Dark single-origin Peruvian chocolate whipped with a hint of young spruce shoot oil, served inside a miniature wood bowl.",
-    image: dishCoffee
-  },
-  // Drinks
-  {
-    id: "dr1",
-    name: "Smoked Botanical Gin & Tonic",
-    price: "$22",
-    category: "drinks",
-    description: "House-distilled forest gin infused with pine needles, juniper berries, elderflower, served with local tonic and active cedar smoke.",
-    tag: "House Special",
-    image: heroBg
-  },
-  {
-    id: "dr2",
-    name: "Geisha Pour-Over Coffee",
-    price: "$14",
-    category: "drinks",
-    description: "Single-origin Geisha beans brewed slow tableside. Offers distinct tasting notes of jasmine, peach nectar, and citrus honey.",
-    image: dishCoffee
-  }
-];
+import { Loader2, Sparkles } from "lucide-react";
+import { tableService } from "@/services/tableService";
+import { MenuItem } from "@/types";
+import { formatINR } from "@/lib/utils";
 
 const CATEGORIES = [
   { id: "all", name: "Full Archive" },
@@ -117,27 +11,44 @@ const CATEGORIES = [
   { id: "lunch", name: "Lunch" },
   { id: "dinner", name: "Dinner" },
   { id: "desserts", name: "Desserts" },
-  { id: "drinks", name: "Drinks" }
+  { id: "drinks", name: "Drinks" },
 ];
 
-const InteractiveMenu = () => {
-  const [activeCategory, setActiveCategory] = useState<string>("all");
+const FALLBACK_IMAGE =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23050b07' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23dfb93c' font-family='serif' font-size='14'%3ENo image%3C/text%3E%3C/svg%3E";
 
-  const filteredItems = activeCategory === "all"
-    ? MENU_ITEMS
-    : MENU_ITEMS.filter((item) => item.category === activeCategory);
+const itemId = (item: MenuItem) => item._id || item.id || item.name;
+
+const InteractiveMenu = () => {
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [items, setItems] = useState<MenuItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    tableService
+      .getPublicMenu()
+      .then(setItems)
+      .catch(() => setError("Could not load menu"))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filteredItems = useMemo(
+    () =>
+      activeCategory === "all"
+        ? items
+        : items.filter((item) => item.category === activeCategory),
+    [activeCategory, items]
+  );
 
   return (
     <div
       id="menu"
       className="relative min-h-screen bg-forest-950 py-24 md:py-32 border-t border-gold-300/5 overflow-hidden"
     >
-      {/* Candlelight backdrop */}
-      <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-primary/5 rounded-full filter blur-[110px] pointer-events-none animate-candle"></div>
+      <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-primary/5 rounded-full filter blur-[110px] pointer-events-none animate-candle" />
 
       <div className="container-width relative z-10 space-y-16">
-        
-        {/* Title Header */}
         <div className="text-center max-w-2xl mx-auto space-y-4">
           <span className="inline-block text-xs font-semibold tracking-[6px] uppercase text-primary font-inter">
             Chapter 04
@@ -150,7 +61,6 @@ const InteractiveMenu = () => {
           </p>
         </div>
 
-        {/* Filter Navigation Row */}
         <div className="flex flex-wrap justify-center gap-2 md:gap-4 border-b border-gold-300/10 pb-6">
           {CATEGORIES.map((cat) => (
             <button
@@ -174,62 +84,67 @@ const InteractiveMenu = () => {
           ))}
         </div>
 
-        {/* Dynamic Grid Layout */}
-        <motion.div 
-          layout 
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredItems.map((item) => (
-              <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4 }}
-                key={item.id}
-                className="bg-forest-glass rounded-2xl p-5 border border-gold-300/5 hover:border-primary/20 transition-all duration-300 relative group gold-sweep flex flex-col sm:flex-row gap-6 items-start sm:items-center"
-              >
-                {/* Elegant Rounded Image Container */}
-                <div className="w-full sm:w-28 sm:h-28 md:w-32 md:h-32 aspect-[16/10] sm:aspect-square relative rounded-xl overflow-hidden shrink-0 border border-gold-300/10 shadow-md">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 select-none"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-forest-950/40 via-transparent to-transparent opacity-60" />
-                </div>
-
-                {/* Content */}
-                <div className="flex-grow space-y-3 w-full">
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="space-y-1.5">
-                      {item.tag && (
-                        <div className="inline-flex items-center gap-1 text-[8px] font-bold uppercase tracking-wider text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">
-                          <Sparkles className="h-2.5 w-2.5" />
-                          {item.tag}
-                        </div>
-                      )}
-                      <h3 className="font-playfair text-lg sm:text-xl text-foreground font-semibold group-hover:text-primary transition-colors">
-                        {item.name}
-                      </h3>
-                    </div>
-                    
-                    {/* Glowing Price Seal */}
-                    <span className="font-playfair text-base text-primary font-semibold border border-primary/20 bg-primary/5 px-2.5 py-1 rounded-md shrink-0">
-                      {item.price}
-                    </span>
+        {loading ? (
+          <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm py-16">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Loading menu…
+          </div>
+        ) : error ? (
+          <p className="text-center text-sm text-muted-foreground py-16">{error}</p>
+        ) : filteredItems.length === 0 ? (
+          <p className="text-center text-sm text-muted-foreground py-16">
+            No items in this category yet.
+          </p>
+        ) : (
+          <motion.div layout className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            <AnimatePresence mode="popLayout">
+              {filteredItems.map((item) => (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4 }}
+                  key={itemId(item)}
+                  className="bg-forest-glass rounded-2xl p-5 border border-gold-300/5 hover:border-primary/20 transition-all duration-300 relative group gold-sweep flex flex-col sm:flex-row gap-6 items-start sm:items-center"
+                >
+                  <div className="w-full sm:w-28 sm:h-28 md:w-32 md:h-32 aspect-[16/10] sm:aspect-square relative rounded-xl overflow-hidden shrink-0 border border-gold-300/10 shadow-md">
+                    <img
+                      src={item.image || FALLBACK_IMAGE}
+                      alt={item.name}
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 select-none"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-forest-950/40 via-transparent to-transparent opacity-60" />
                   </div>
 
-                  <p className="font-inter text-muted-foreground text-xs leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+                  <div className="flex-grow space-y-3 w-full">
+                    <div className="flex justify-between items-start gap-4">
+                      <div className="space-y-1.5">
+                        {item.tag && (
+                          <div className="inline-flex items-center gap-1 text-[8px] font-bold uppercase tracking-wider text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">
+                            <Sparkles className="h-2.5 w-2.5" />
+                            {item.tag}
+                          </div>
+                        )}
+                        <h3 className="font-playfair text-lg sm:text-xl text-foreground font-semibold group-hover:text-primary transition-colors">
+                          {item.name}
+                        </h3>
+                      </div>
 
+                      <span className="font-playfair text-base text-primary font-semibold border border-primary/20 bg-primary/5 px-2.5 py-1 rounded-md shrink-0">
+                        {formatINR(item.price)}
+                      </span>
+                    </div>
+
+                    <p className="font-inter text-muted-foreground text-xs leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
       </div>
     </div>
   );

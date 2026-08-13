@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Leaf, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Menu, X, Leaf } from "lucide-react";
 
 // Navigation links mapping the cinematic storytelling chapters
 const NAV_ITEMS = [
@@ -8,8 +7,7 @@ const NAV_ITEMS = [
   { name: "Ambience", href: "#ambience" },
   { name: "Signature", href: "#signature" },
   { name: "Menu", href: "#menu" },
-  { name: "Chef", href: "#chef" },
-  { name: "Ingredients", href: "#ingredients" },
+  { name: "Owner", href: "#owner" },
 ];
 
 const Header = () => {
@@ -88,17 +86,6 @@ const Header = () => {
             ))}
           </div>
 
-          {/* Desktop Action (Reserve Button) */}
-          <div className="hidden md:flex items-center">
-            <Button
-              className="bg-primary hover:bg-primary/95 text-primary-foreground font-semibold tracking-wider text-xs uppercase px-6 py-5 rounded-full border border-primary/20 transition-all duration-300 hover:shadow-[0_0_15px_rgba(223,185,60,0.3)] hover:-translate-y-0.5 group"
-              onClick={() => handleNavigation("#reservation")}
-            >
-              Reserve Table
-              <ChevronRight className="h-4 w-4 ml-1 transform group-hover:translate-x-1 transition-transform duration-200" />
-            </Button>
-          </div>
-
           {/* Mobile Menu Toggle */}
           <div className="md:hidden">
             <button
@@ -131,14 +118,6 @@ const Header = () => {
                 {name}
               </button>
             ))}
-            <div className="pt-4 border-t border-border/60">
-              <Button
-                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold tracking-wider uppercase w-full py-5 rounded-full shadow-[0_0_15px_rgba(223,185,60,0.15)]"
-                onClick={() => handleNavigation("#reservation")}
-              >
-                Reserve Table
-              </Button>
-            </div>
           </div>
         </div>
       </nav>

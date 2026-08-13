@@ -74,6 +74,8 @@ export interface Order {
   _id?: string;
   orderNumber: string;
   table: any;
+  guestName?: string;
+  guestPhone?: string;
   items: OrderItem[];
   total: number;
   status: 'PENDING' | 'PREPARING' | 'READY' | 'SERVED' | 'PAID' | 'CANCELLED';

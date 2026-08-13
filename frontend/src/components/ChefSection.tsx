@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Award, Compass, Heart } from "lucide-react";
+import { Award, Heart } from "lucide-react";
 import chef1 from "@/assets/images/chef-1.webp";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -34,7 +34,7 @@ const ChefSection = () => {
       }
 
       // 2. Accolades staggered fade-in
-      gsap.from(".chef-fade", {
+      gsap.from(".owner-fade", {
         y: 40,
         opacity: 0,
         stagger: 0.15,
@@ -54,7 +54,7 @@ const ChefSection = () => {
   return (
     <div
       ref={containerRef}
-      id="chef"
+      id="owner"
       className="relative min-h-screen bg-forest-900/40 py-24 md:py-32 border-t border-gold-300/5 overflow-hidden flex items-center"
     >
       {/* Candlelight glow backdrop */}
@@ -70,7 +70,7 @@ const ChefSection = () => {
             <div className="absolute inset-0 w-full h-full transform transition-transform duration-[10000ms] ease-in-out scale-[1.03] hover:scale-[1.08]">
               <img
                 src={chef1}
-                alt="Executive Chef Aarav Kapoor"
+                alt="Founder and owner Aarav Kapoor"
                 className="w-full h-full object-cover select-none"
               />
             </div>
@@ -84,10 +84,10 @@ const ChefSection = () => {
               <div className="absolute bottom-10 left-1/2 w-1 h-20 bg-gradient-to-t from-transparent via-white/15 to-transparent blur-[3px] steam-particle" style={{ animationDelay: '3.5s' }}></div>
             </div>
 
-            {/* Chef name badge on card */}
+            {/* Owner name badge on card */}
             <div className="absolute bottom-6 left-6 right-6 z-25 bg-forest-950/70 border border-gold-300/10 p-4 rounded-xl backdrop-blur-md">
               <p className="font-playfair text-lg text-foreground font-semibold">Aarav Kapoor</p>
-              <p className="font-inter text-[9px] tracking-widest text-primary uppercase font-bold">Executive Chef & Co-Owner</p>
+              <p className="font-inter text-[9px] tracking-widest text-primary uppercase font-bold">Founder & Owner</p>
             </div>
           </div>
         </div>
@@ -95,48 +95,45 @@ const ChefSection = () => {
         {/* Right Column: Culinary philosophy, credentials, and animated signature */}
         <div className="lg:col-span-7 space-y-8">
           <div className="space-y-3">
-            <span className="chef-fade inline-block text-xs font-semibold tracking-[6px] uppercase text-primary font-inter">
+            <span className="owner-fade inline-block text-xs font-semibold tracking-[6px] uppercase text-primary font-inter">
               Chapter 05
             </span>
-            <h2 className="chef-fade font-playfair text-4xl sm:text-5xl text-foreground font-semibold leading-tight">
-              Culinary Alchemy Guided By The Canopy
+            <h2 className="owner-fade font-playfair text-4xl sm:text-5xl text-foreground font-semibold leading-tight">
+              A Vision Rooted In The Forest
             </h2>
           </div>
 
-          {/* Quote Block */}
-          <blockquote className="chef-fade border-l-2 border-primary/40 pl-6 italic font-playfair text-lg sm:text-xl text-gold-300 leading-relaxed">
-            "To gather herbs from damp soils, to cook over red oak embers, to serve on cold stone. Our culinary philosophy is simply to sit back and let the ancient voice of the forest speak through our fire."
+          <blockquote className="owner-fade border-l-2 border-primary/40 pl-6 italic font-playfair text-lg sm:text-xl text-gold-300 leading-relaxed">
+            "Forest Feast was never just a restaurant. It is a place where community gathers, local growers are honoured, and every guest feels the calm of the canopy."
           </blockquote>
 
-          <p className="chef-fade font-inter text-muted-foreground text-sm sm:text-base leading-relaxed">
-            Chef Aarav Kapoor spent over a decade cooking in luxury mountain lodges across Norway and New Zealand before returning to found Forest Feast. By blending traditional open-fire roasting methods with modern slow fermentation, he highlights ingredients in their purest state.
+          <p className="owner-fade font-inter text-muted-foreground text-sm sm:text-base leading-relaxed">
+            Aarav Kapoor founded Forest Feast after years building hospitality spaces across India and abroad. He shaped the café around slow dining, seasonal sourcing, and a team culture that treats service as craft — not transaction.
           </p>
 
-          {/* Awards Accordion Grid */}
-          <div className="chef-fade grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+          <div className="owner-fade grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
             <div className="flex items-center gap-3 p-4 bg-forest-glass rounded-xl border border-gold-300/5">
               <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary border border-primary/20 shrink-0">
                 <Award className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="font-playfair text-sm text-foreground font-semibold">Michelin Green Star</h4>
-                <p className="font-inter text-[9px] text-muted-foreground uppercase tracking-wider">Gastronomy & Sustainability</p>
+                <h4 className="font-playfair text-sm text-foreground font-semibold">Founded 2019</h4>
+                <p className="font-inter text-[9px] text-muted-foreground uppercase tracking-wider">Western Ghats, India</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3 p-4 bg-forest-glass rounded-xl border border-gold-300/5">
               <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary border border-primary/20 shrink-0">
-                <Compass className="h-5 w-5" />
+                <Heart className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="font-playfair text-sm text-foreground font-semibold">Global Culinary Guild</h4>
-                <p className="font-inter text-[9px] text-muted-foreground uppercase tracking-wider">Innovation In Wild Foraging</p>
+                <h4 className="font-playfair text-sm text-foreground font-semibold">Community First</h4>
+                <p className="font-inter text-[9px] text-muted-foreground uppercase tracking-wider">Local growers & artisans</p>
               </div>
             </div>
           </div>
 
-          {/* Animated Handwritten Signature */}
-          <div className="chef-fade pt-4 flex flex-col items-start">
+          <div className="owner-fade pt-4 flex flex-col items-start">
             <svg
               className="w-48 h-16 text-primary"
               viewBox="0 0 200 60"
@@ -153,7 +150,7 @@ const ChefSection = () => {
               />
             </svg>
             <span className="font-inter text-[9px] tracking-widest text-muted-foreground uppercase font-semibold mt-1">
-              Chef's Mark of Authenticity
+              Owner&apos;s Mark of Authenticity
             </span>
           </div>
 

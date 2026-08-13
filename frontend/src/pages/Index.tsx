@@ -13,10 +13,6 @@ import Ambience from "@/components/Ambience";
 import SignatureDishes from "@/components/SignatureDishes";
 import InteractiveMenu from "@/components/InteractiveMenu";
 import ChefSection from "@/components/ChefSection";
-import Ingredients from "@/components/Ingredients";
-import GuestExperience from "@/components/GuestExperience";
-import GallerySection from "@/components/GallerySection";
-import ReservationSection from "@/components/ReservationSection";
 
 const HomePage = () => {
   return (
@@ -45,20 +41,8 @@ const HomePage = () => {
           {/* Chapter 04: Interactive gastronomy archive */}
           <InteractiveMenu />
 
-          {/* Chapter 05: Meet Chef Aarav */}
+          {/* Chapter 05: Meet the owner */}
           <ChefSection />
-
-          {/* Chapter 06: Fresh Sourcing details */}
-          <Ingredients />
-
-          {/* Chapter 07: Guest testimonial chronicle */}
-          <GuestExperience />
-
-          {/* Chapter 08: Visual tapestry (asymmetric grid) */}
-          <GallerySection />
-
-          {/* Chapter 09: Table booking panel */}
-          <ReservationSection />
         </main>
 
         {/* Page footer closing credits */}

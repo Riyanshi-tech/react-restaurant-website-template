@@ -96,7 +96,7 @@ const OperationalLogs: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6" data-aos="fade-up">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

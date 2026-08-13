@@ -8,12 +8,18 @@ import userRoutes from './routes/userRoutes.js';
 import auditRoutes from './routes/auditRoutes.js';
 import tableRoutes from './routes/tableRoutes.js';
 import publicTableRoutes from './routes/publicTableRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
+import menuRoutes from './routes/menuRoutes.js';
+import { getMenuItems } from './controllers/menuController.js';
+import { getPublicBill } from './controllers/publicTableController.js';
+import orderRoutes from './routes/orderRoutes.js';
+import settingsRoutes from './routes/settingsRoutes.js';
 
 const app = express();
 
 // 1. GLOBAL MIDDLEWARES
 app.use(cors({
-  origin: true, // We will refine this based on the frontend origin later
+  origin: true,
   credentials: true
 }));
 
@@ -34,6 +40,12 @@ app.use('/api/users', userRoutes);
 app.use('/api/audit-logs', auditRoutes);
 app.use('/api/tables', tableRoutes);
 app.use('/api/public/tables', publicTableRoutes);
+app.get('/api/public/menu', getMenuItems);
+app.get('/api/public/bills/:slug', getPublicBill);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/menu', menuRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // 3. UNHANDLED ROUTES HANDLER
 app.all('*', (req, res, next) => {

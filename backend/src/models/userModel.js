@@ -44,27 +44,31 @@ const userSchema = new mongoose.Schema(
         if (this.role === 'ADMIN') {
           return [
             'menu.read', 'menu.write',
-            'booking.read', 'booking.write',
             'staff.read', 'staff.write',
             'logs.read',
             'pos.read', 'pos.write',
             'order.read', 'order.write',
             'sales.read',
             'users.read', 'users.write',
-            'settings.read', 'settings.write'
+            'settings.read', 'settings.write',
+            'tables.read', 'tables.create', 'tables.update', 'tables.delete', 'tables.qr.generate'
           ];
         } else if (this.role === 'MANAGER') {
           return [
             'menu.read', 'menu.write',
-            'booking.read', 'booking.write',
             'staff.read',
-            'logs.read'
+            'logs.read',
+            'order.read',
+            'users.read',
+            'tables.read', 'tables.create', 'tables.update', 'tables.delete', 'tables.qr.generate'
           ];
         } else if (this.role === 'CASHIER') {
           return [
             'pos.read', 'pos.write',
             'order.read', 'order.write',
-            'sales.read'
+            'sales.read',
+            'menu.read',
+            'tables.read'
           ];
         }
         return [];

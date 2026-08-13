@@ -3,8 +3,7 @@ import QRCode from 'qrcode';
 import { ApiError } from '../utils/apiError.js';
 import { sendSuccess } from '../utils/responseFormatter.js';
 import { createTableSchema, updateTableSchema } from '../validators/tableValidator.js';
-
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:8081';
+import { getAppBaseUrl } from '../utils/appUrl.js';
 
 const generateSlug = (tableNumber) => {
   const pad = String(tableNumber).padStart(2, '0');
@@ -66,8 +65,8 @@ export const createTable = async (req, res, next) => {
       slugExists = await Table.findOne({ slug });
     }
 
-    // Generate QR Code data URL pointing to ordering page
-    const orderingUrl = `${FRONTEND_URL}/orders/${slug}`;
+    // QR encodes live admin domain (Origin) else FRONTEND_URL
+    const orderingUrl = `${getAppBaseUrl(req)}/orders/${slug}`;
     const qrCodeUrl = await QRCode.toDataURL(orderingUrl);
 
     const table = await Table.create({
@@ -169,8 +168,7 @@ export const regenerateTableQr = async (req, res, next) => {
       slugExists = await Table.findOne({ slug });
     }
 
-    // Re-generate QR Code data URL
-    const orderingUrl = `${FRONTEND_URL}/orders/${slug}`;
+    const orderingUrl = `${getAppBaseUrl(req)}/orders/${slug}`;
     const qrCodeUrl = await QRCode.toDataURL(orderingUrl);
 
     table.slug = slug;

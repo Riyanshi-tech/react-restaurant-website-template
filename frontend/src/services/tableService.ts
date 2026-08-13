@@ -1,5 +1,6 @@
 import api from './api';
-import { Table, PublicTablePayload, Order } from '../types';
+import { Table, PublicTablePayload, Order, MenuItem } from '../types';
+import type { BillingSettings } from './posService';
 
 export interface TableInput {
   tableNumber: number;
@@ -48,8 +49,35 @@ export const tableService = {
     return response.data.data;
   },
 
-  async placeTableOrder(slug: string, items: { menuItemId: string; quantity: number }[]) {
-    const response = await api.post<{ data: { order: Order } }>(`/public/tables/${slug}/orders`, { items });
+  async placeTableOrder(
+    slug: string,
+    items: { menuItemId: string; quantity: number }[],
+    guest: { guestName: string; guestPhone: string }
+  ) {
+    const response = await api.post<{ data: { order: Order } }>(`/public/tables/${slug}/orders`, {
+      items,
+      ...guest
+    });
     return response.data.data.order;
+  },
+
+  async getGuestOrders(phone: string) {
+    const response = await api.get<{ data: { orders: Order[]; count: number } }>(
+      '/public/tables/guest/orders',
+      { params: { phone } }
+    );
+    return response.data.data.orders;
+  },
+
+  async getPublicMenu(): Promise<MenuItem[]> {
+    const response = await api.get<{ data: { items: MenuItem[] } }>('/public/menu');
+    return response.data.data.items;
+  },
+
+  async getPublicBill(slug: string): Promise<{ order: Order; billing: BillingSettings }> {
+    const response = await api.get<{ data: { order: Order; billing: BillingSettings } }>(
+      `/public/bills/${encodeURIComponent(slug)}`
+    );
+    return response.data.data;
   }
 };

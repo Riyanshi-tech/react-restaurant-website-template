@@ -1,9 +1,14 @@
 import express from 'express';
-import { getPublicTableDetails, placeTableOrder } from '../controllers/publicTableController.js';
+import {
+  getPublicTableDetails,
+  placeTableOrder,
+  getGuestOrdersByPhone
+} from '../controllers/publicTableController.js';
 
 const router = express.Router();
 
-// Public routes for QR-based customer ordering
+// Before /:slug so "guest" is not treated as a slug
+router.get('/guest/orders', getGuestOrdersByPhone);
 router.get('/:slug', getPublicTableDetails);
 router.post('/:slug/orders', placeTableOrder);
 
