@@ -46,13 +46,14 @@ export const login = async (req, res, next) => {
     const token = generateToken(user._id);
 
     // 5. Setup cookie options
+    const isProd = process.env.NODE_ENV === 'production';
     const cookieOptions = {
       expires: new Date(
         Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days matching token default
       ),
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict'
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax'
     };
 
     // 6. Set cookie and send response
@@ -83,11 +84,12 @@ export const login = async (req, res, next) => {
  */
 export const logout = async (req, res, next) => {
   try {
+    const isProd = process.env.NODE_ENV === 'production';
     const cookieOptions = {
       expires: new Date(Date.now() + 5000), // expires in 5 seconds
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict'
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax'
     };
 
     res.cookie('token', '', cookieOptions);
