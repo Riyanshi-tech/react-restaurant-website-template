@@ -3,41 +3,41 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sparkles, Compass } from "lucide-react";
 import { useLenis } from "@studio-freight/react-lenis";
-import dishSteak from "@/assets/images/dish-steak.webp";
-import dishCoffee from "@/assets/images/dish-coffee.webp";
-import ourStory from "@/assets/images/our-story.webp";
+import dishPizza from "@/assets/images/dish-pizza.webp";
+import dishBurger from "@/assets/images/dish-burger.webp";
+import dishNoodles from "@/assets/images/dish-noodles.webp";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const DISHES = [
   {
     id: "01",
-    name: "Oak-Smoked Wagyu Ribeye",
-    category: "Main Course",
-    price: "$95",
-    image: dishSteak,
-    description: "Lineage Wagyu wood-fired over forest red oak. Encrusted with edible 24k gold leaf, local truffle compound butter, and wild rosemary smoke.",
-    ingredients: ["A5 Wagyu", "Truffle Butter", "Forest Oak Smoke", "Gold Flakes"],
+    name: "Forest Fire Wood-Fired Pizza",
+    category: "Signature Pizza",
+    price: "$18",
+    image: dishPizza,
+    description: "Artisanal crust baked in our custom wood-fire clay oven. Topped with fresh buffalo mozzarella, vine-ripened tomatoes, and wild forest mushrooms.",
+    ingredients: ["Clay-Oven Crust", "Buffalo Mozzarella", "Forest Mushrooms", "Basil Leaves"],
     recommended: true
   },
   {
     id: "02",
-    name: "Siphon Geisha Coffee Ritual",
-    category: "Coffee Craft",
-    price: "$28",
-    image: dishCoffee,
-    description: "Rare Panama Geisha siphon-brewed tableside. Warm backlighting reveals floral notes of jasmine, orange blossom, and wild honey.",
-    ingredients: ["Panama Geisha Beans", "Filtered Forest Spring Water", "Tableside Siphon"],
+    name: "Jungle King Craft Burger",
+    category: "Gourmet Burgers",
+    price: "$16",
+    image: dishBurger,
+    description: "Double-stack prime beef patty charcoal-grilled to perfection. Served with mature cheddar cheese, crispy lettuce, ripe tomatoes, and our signature jungle-style sauce.",
+    ingredients: ["Prime Beef", "Mature Cheddar", "Artisanal Brioche", "Jungle Sauce"],
     recommended: true
   },
   {
     id: "03",
-    name: "Pine Needle & Moss Sorbet",
-    category: "Dessert",
-    price: "$24",
-    image: ourStory, // Reused in a gorgeous dark vertical card
-    description: "Sustainably harvested Douglas fir needle oil churned into silk sorbet. Served over candied forest berries and crystallized moss shards.",
-    ingredients: ["Douglas Fir Oil", "Wild Berries", "Sugared Forest Moss"],
+    name: "Panda's Special Sichuan Noodles",
+    category: "Wok Specialty",
+    price: "$14",
+    image: dishNoodles,
+    description: "Hand-pulled wheat noodles tossed in a fiery Sichuan chili oil. Tossed with forest scallions, crushed peanuts, toasted sesame, and fresh aromatic greens.",
+    ingredients: ["Hand-pulled Noodles", "Sichuan Chili Oil", "Forest Scallions", "Crushed Peanuts"],
     recommended: false
   }
 ];

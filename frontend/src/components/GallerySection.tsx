@@ -7,17 +7,17 @@ import chef2 from "@/assets/images/chef-2.webp";
 import chef3 from "@/assets/images/chef-3.webp";
 import ourStory from "@/assets/images/our-story.webp";
 import ambience1 from "@/assets/images/ambience-1.webp";
-import dishSteak from "@/assets/images/dish-steak.webp";
-import dishCoffee from "@/assets/images/dish-coffee.webp";
+import dishPizza from "@/assets/images/dish-pizza.webp";
+import dishBurger from "@/assets/images/dish-burger.webp";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const GALLERY_ITEMS = [
   { id: 1, image: ourStory, title: "Redwood Sanctuary", colSpan: "col-span-12 md:col-span-6", aspect: "aspect-[4/3]" },
-  { id: 2, image: dishSteak, title: "Wood-Fired Ribeye", colSpan: "col-span-6 md:col-span-3", aspect: "aspect-[3/4]" },
+  { id: 2, image: dishPizza, title: "Wood-Fired Pizza", colSpan: "col-span-6 md:col-span-3", aspect: "aspect-[3/4]" },
   { id: 3, image: chef1, title: "Chef Aarav", colSpan: "col-span-6 md:col-span-3", aspect: "aspect-[3/4]" },
   { id: 4, image: chef2, title: "Pastry Craft Sloane", colSpan: "col-span-6 md:col-span-3", aspect: "aspect-[3/4]" },
-  { id: 5, image: dishCoffee, title: "Siphon Brewing", colSpan: "col-span-6 md:col-span-3", aspect: "aspect-[3/4]" },
+  { id: 5, image: dishBurger, title: "Jungle King Burger", colSpan: "col-span-6 md:col-span-3", aspect: "aspect-[3/4]" },
   { id: 6, image: ambience1, title: "Rainforest Terraces", colSpan: "col-span-12 md:col-span-6", aspect: "aspect-[4/3]" },
   { id: 7, image: chef3, title: "Grillmaster Diego", colSpan: "col-span-12 md:col-span-6", aspect: "aspect-[16/9]" }
 ];
