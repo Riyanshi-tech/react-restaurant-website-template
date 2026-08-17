@@ -140,7 +140,7 @@ const Hero = () => {
             {["Nature", "Meets", "Fine", "Gastronomy"].map((line, i) => (
               <span key={line} className="block overflow-hidden">
                 <span
-                  className={`hero-line inline-block text-[clamp(1.95rem,5.4vw,4.5rem)] ${
+                  className={`hero-line inline-block text-[clamp(3.25rem,9vw,7.5rem)] ${
                     i === 2
                       ? "italic text-primary font-normal"
                       : i === 3
