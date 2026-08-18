@@ -136,9 +136,9 @@ const Hero = () => {
             </span>
           </div>
 
-          <h1 className="font-cormorant font-light leading-[0.88] tracking-tight text-foreground">
+          <h1 className="font-cormorant font-light leading-[0.95] tracking-tight text-foreground">
             {["Nature", "Meets", "Fine", "Gastronomy"].map((line, i) => (
-              <span key={line} className="block overflow-hidden">
+              <span key={line} className="block overflow-hidden py-3 pr-8 -my-3 -mr-8">
                 <span
                   className={`hero-line inline-block text-[clamp(3.25rem,9vw,7.5rem)] ${
                     i === 2

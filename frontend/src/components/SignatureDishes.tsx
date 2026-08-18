@@ -36,7 +36,7 @@ const DISHES = [
     category: "Wok Specialty",
     price: "$14",
     image: dishNoodles,
-    description: "Hand-pulled wheat noodles tossed in a fiery Sichuan chili oil. Tossed with forest scallions, crushed peanuts, toasted sesame, and fresh aromatic greens.",
+    description: "Hand-pulled wheat noodles dressed in a fiery Sichuan chili oil. Topped with forest scallions, crushed peanuts, toasted sesame, and fresh aromatic greens.",
     ingredients: ["Hand-pulled Noodles", "Sichuan Chili Oil", "Forest Scallions", "Crushed Peanuts"],
     recommended: false
   }
@@ -228,7 +228,7 @@ const SignatureDishes = () => {
         {DISHES.map((dish) => (
           <div
             key={dish.id}
-            className="h-screen w-screen flex items-center justify-center shrink-0 bg-forest-900/60 px-6 lg:px-20 relative overflow-hidden py-12 lg:py-0 snap-center"
+            className="h-screen w-screen flex items-center justify-center shrink-0 bg-forest-900/60 px-6 lg:px-20 relative overflow-y-auto lg:overflow-hidden py-12 lg:py-0 snap-center"
           >
             {/* Ambient candlelight element per dish */}
             <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-primary/5 rounded-full filter blur-[80px] pointer-events-none animate-candle"></div>
